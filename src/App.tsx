@@ -9,7 +9,7 @@ function App() {
   return (
     <div className="App">
       <Button      //button that goes to gdg website when clicked
-        //onClick = {() => window.open('https://gamedayguru.com/', '_self')}
+        onClick = {() => window.open('https://gamedayguru.com/', '_self')}
         variant =  'default'
         size = 'md'
         text = "Testing Button"

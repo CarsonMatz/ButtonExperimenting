@@ -1,6 +1,6 @@
 {
-  "name": "experimenting",
-  "version": "0.1.0",
+  "name": "ButtonExperiment",
+  "version": "1.22.18",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.14.1",
@@ -39,5 +39,10 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "description": "Sample button",
+  "main": "ButtonExperiment",
+  "repository": "y",
+  "author": "y",
+  "license": "y"
 }
