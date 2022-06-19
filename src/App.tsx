@@ -8,15 +8,16 @@ import { } from './Components/Button';
 function App() {
   return (
     <div className="App">
-      //button that goes to gdg website when clicked
-      <Button
-        onMouseOver = {() => "this.style.opacity = '0.3'"} //doesn't do anything
-        onClick = {() => window.open('https://gamedayguru.com/', '_self')}
+      <Button      //button that goes to gdg website when clicked
+        onClick = {async () => console.log("clicked") }
         variant =  'default'
         size = 'md'
+        text = "Testing Button"
       />
     </div>
   );
 }
 
 export default App;
+
+//window.open('https://gamedayguru.com/', '_self')
