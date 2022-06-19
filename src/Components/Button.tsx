@@ -28,11 +28,13 @@ export const BUTTON_STYLE : React.CSSProperties = {
     textAlign: 'center',   
 };
 
+//function as an attempt to figure out keyframes for loading spinner
 export function loader() {
     let spin = keyframes `0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }`;
     return spin;
 };
+//css style for loading spinner
 export const LOADING_STYLE : React.CSSProperties = {
     border: '10px solid #f3f3f3',
     borderTop: '10px solid #3498db',
@@ -71,24 +73,24 @@ export const Button : FC<ButtonProps>  = ({
    const handleMouseLeave = mkHandleMouseLeave(setHovered);
 
    const handleClickAsync = async ()=>{
+       //delay function I made just for testing purposes so I can slow down the transitions between states for visual testing
     const delay = (ms: number | undefined) => new Promise(
         resolve => setTimeout(resolve, ms)
       );
 
-    // set buttonState to loading
+    // set buttonState to loading, log it in the console, and delay in this state to view spinner
     setButtonState("loading");
     console.log("loading");
     await delay(5000);
+
     // dispatch the onclick
     const err = await onClick();
 
     // if there's an error dispatch update to button state
     // that shows error
+    //otherwise update to state that shows success
     if(err){
         setButtonState("err");
-        style : {
-
-        }
         console.log("error");
     } else if(!err){
         setButtonState("success");
@@ -102,6 +104,7 @@ export const Button : FC<ButtonProps>  = ({
     }, 1000);
 
 }
+    //return general button when in default state
     if(buttonState === 'default'){
         return (
             <button
@@ -118,6 +121,7 @@ export const Button : FC<ButtonProps>  = ({
             </button>
         )
     }
+    //return loading spinner when in loading state
     if(buttonState === 'loading'){
         return (
             <button
@@ -131,6 +135,7 @@ export const Button : FC<ButtonProps>  = ({
         )
     }
 
+    //need a return value for button that's not tied up in if statements, just used default
     return (
         <button
         onMouseEnter={handleMouseEnter}
