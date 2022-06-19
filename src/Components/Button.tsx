@@ -1,7 +1,5 @@
-import { render } from '@testing-library/react';
-import { hover } from '@testing-library/user-event/dist/hover';
-import React, {FC, useState, ReactElement, useEffect} from 'react';
-import { isConstructorTypeNode } from 'typescript';
+import React, {FC, useState, useEffect, useReducer} from 'react';
+import { keyframes } from "styled-components";
 
 export const BUTTON_CLASSNAMES : string = 
     "";
@@ -14,9 +12,8 @@ export const mkHandleMouseLeave = (setHovered : (isHovered : boolean)=>void) => 
     setHovered(false);
 };
 
-/* export const mkOnClickAsynch = (setClick : (isClick : number)=>void) => () => {
-    setClick(isClick + 1);
-}; */
+//global declaration of button states
+export type ButtonState = "default" | "loading" | "err" | "success";
 
 //general css for button, can be altered or spoofed up
 export const BUTTON_STYLE : React.CSSProperties = {
@@ -31,35 +28,23 @@ export const BUTTON_STYLE : React.CSSProperties = {
     textAlign: 'center',   
 };
 
-/* export const LOADER_STYLE : React.CSSProperties = {
-    opacity: '1',
-    border: '2px solid #000000',
-    fontFamily: 'sans-serif',
-    padding: '15px 15px',
-    margin: '5px 5px',
-    display: 'inline-block',
-    textAlign: 'center',
-}; */
-
-export function handleClick(action: () => void) {
-    function isLoading() {
-        setTimeout(() => {
-            render({
-                //change CSS to make spinner appear instead of button
-            })
-        }, 1000)
-    }
-
-    isLoading()
-    .then(
-        action();
-    )
-}
-
+export function loader() {
+    let spin = keyframes `0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }`;
+    return spin;
+};
+export const LOADING_STYLE : React.CSSProperties = {
+    border: '10px solid #f3f3f3',
+    borderTop: '10px solid #3498db',
+    borderRadius: '50%',
+    width: '80px',
+    height: '80px',
+    animation: '${loader()} 1s linear infinite',
+};
 
 export type ButtonProps = {
     style ? : React.CSSProperties;
-    onClick: () => void; //takes in-line function
+    onClick: () => Promise<any>; //takes in-line function
     variant?: string; // default, submit, continue, info, exit ...
     size?: string; // sm, md, lg ...
     text: string;
@@ -73,30 +58,85 @@ export const Button : FC<ButtonProps>  = ({
     text,
 }) =>{
 
+    const [buttonState, setButtonState] = useState<ButtonState>("default");
+    /* const [myTimeout, setMyTimeout] = useReducer<NodeJS.Timeout|undefined>((oldTimeout: NodeJS.Timeout, timeout : NodeJS.Timeout)=>{
+          clearTimeout(oldTimeout);
+          return timeout;
+    }, undefined); */
+
     const [isHovered, setHovered] = useState(false);
-    //const [isLoading, setLoading] = useState(false);
 
    // use your factory
    const handleMouseEnter = mkHandleMouseEnter(setHovered);
    const handleMouseLeave = mkHandleMouseLeave(setHovered);
 
-   /* toggleLoader = () => {
-       setLoading(!isLoading)
-   } */
+   const handleClickAsync = async ()=>{
+    const delay = (ms: number | undefined) => new Promise(
+        resolve => setTimeout(resolve, ms)
+      );
 
-   //const handleClickAsync = mkOnClickAsynch(setClick);
+    // set buttonState to loading
+    setButtonState("loading");
+    console.log("loading");
+    await delay(5000);
+    // dispatch the onclick
+    const err = await onClick();
 
-   /* function Normal(ButtonProps) {
-       return
-   } */
+    // if there's an error dispatch update to button state
+    // that shows error
+    if(err){
+        setButtonState("err");
+        style : {
 
+        }
+        console.log("error");
+    } else if(!err){
+        setButtonState("success");
+        console.log("success");
+    }
 
-   return (
+    setTimeout(()=>{
+        // set the dispatch back to default
+        setButtonState("default");
+        console.log("default");
+    }, 1000);
+
+}
+    if(buttonState === 'default'){
+        return (
+            <button
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+            className={BUTTON_CLASSNAMES}
+            onClick={handleClickAsync}
+            style={{
+                ...BUTTON_STYLE,
+                ...style,
+                ...!isHovered ? BUTTON_STYLE : {opacity: '0.8'}
+                }}>
+                {text}
+            </button>
+        )
+    }
+    if(buttonState === 'loading'){
+        return (
+            <button
+            className={BUTTON_CLASSNAMES}
+            onClick={handleClickAsync}
+            style={{
+                ...LOADING_STYLE,
+                ...style,
+                }}>
+            </button>
+        )
+    }
+
+    return (
         <button
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         className={BUTTON_CLASSNAMES}
-        onClick={handleClick(onClick)}
+        onClick={handleClickAsync}
         style={{
             ...BUTTON_STYLE,
             ...style,
@@ -106,3 +146,4 @@ export const Button : FC<ButtonProps>  = ({
         </button>
     )
 };
+

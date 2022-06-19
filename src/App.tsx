@@ -9,7 +9,7 @@ function App() {
   return (
     <div className="App">
       <Button      //button that goes to gdg website when clicked
-        onClick = {() => window.open('https://gamedayguru.com/', '_self')}
+        onClick = {async () => console.log("clicked") }
         variant =  'default'
         size = 'md'
         text = "Testing Button"
@@ -19,3 +19,5 @@ function App() {
 }
 
 export default App;
+
+//window.open('https://gamedayguru.com/', '_self')
