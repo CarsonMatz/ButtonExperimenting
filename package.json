@@ -11,6 +11,7 @@
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
     "framer-motion": "^6.3.11",
+    "playwright-test": "^8.1.1",
     "react": "^18.1.0",
     "react-checkmark": "^1.4.0",
     "react-dom": "^18.1.0",
@@ -45,10 +46,15 @@
   },
   "description": "Sample button",
   "main": "ButtonExperiment",
-  "repository": "y",
-  "author": "y",
+  "repository": "git@github.com:CarsonMatz/ButtonExperimenting.git",
+  "author": "Carson Matz",
   "license": "y",
   "devDependencies": {
-    "@types/styled-components": "^5.1.25"
+    "@babel/preset-env": "^7.18.2",
+    "@babel/preset-react": "^7.17.12",
+    "@types/styled-components": "^5.1.25",
+    "babel-jest": "^28.1.1",
+    "jest": "^28.1.1",
+    "react-test-renderer": "^18.2.0"
   }
 }
