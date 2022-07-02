@@ -9,7 +9,13 @@ function App() {
   return (
     <div className="App">
       <Button      //button that goes to gdg website when clicked
-        onClick = {async () => console.log("clicked") }
+        onClick = {async () =>fetch("https://httpbin.org/get")}
+        variant =  'default'
+        size = 'md'
+        text = "Testing Button"
+      />
+      <Button      //button that goes to gdg website when clicked
+        onClick = {async () =>fetch("https://httpnonesence.org/nonesense")}
         variant =  'default'
         size = 'md'
         text = "Testing Button"
