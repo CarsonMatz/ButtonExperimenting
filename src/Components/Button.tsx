@@ -1,5 +1,6 @@
 import React, {FC, useState, useEffect, useReducer} from 'react';
 import { motion } from "framer-motion";
+import { to } from "await-to-js"
 
 export const BUTTON_CLASSNAMES : string = 
     "";
@@ -104,7 +105,7 @@ export const Button : FC<ButtonProps>  = ({
     //console.log("loading");
 
     // dispatch the onclick
-    const err = await onClick();
+    const [err] = await to(onClick());
 
     // if there's an error dispatch update to button state
     // that shows error
