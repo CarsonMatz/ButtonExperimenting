@@ -130,6 +130,7 @@ export const Button : FC<ButtonProps>  = ({
     if(buttonState === 'default'){
         return (
             <button
+            title = 'default'
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
             className={BUTTON_CLASSNAMES}

@@ -1,6 +1,10 @@
-import { test, expect } from '@playwright/test';
+import { render, fireEvent, queryByTitle } from '@testing-library/react';
+import  {Button}  from './Button';
 
-/*test('button text',async ({Button}) => {
-    const text = Button.locator('Button');
-    await expect(text).toHaveText({text});
-})*/
+it('checkButtonRender', ()=> {
+    const {queryByTitle} = render(<Button onClick={function (): Promise<any> {
+        throw new Error('Function not implemented.');
+    } } text={''} />);
+    const btn = queryByTitle("default");
+    expect(btn).toBeTruthy();
+});
