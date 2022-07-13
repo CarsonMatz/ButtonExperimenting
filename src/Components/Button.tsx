@@ -1,7 +1,8 @@
 import { render } from '@testing-library/react';
 import { hover } from '@testing-library/user-event/dist/hover';
-import React, {FC, useState, ReactElement, useEffect} from 'react';
+import React, {FC, useState, ReactElement, useEffect, useMemo} from 'react';
 import { isConstructorTypeNode } from 'typescript';
+import { to } from "await-to-js";
 
 export const BUTTON_CLASSNAMES : string = 
     "";
@@ -44,26 +45,28 @@ export const BUTTON_STYLE : React.CSSProperties = {
 export function handleClick(action: () => void) {
     function isLoading() {
         setTimeout(() => {
-            render({
+            /*render({
                 //change CSS to make spinner appear instead of button
-            })
+            })*/
         }, 1000)
     }
 
-    isLoading()
+   /* isLoading()
     .then(
         action();
-    )
+    )*/
 }
 
 
 export type ButtonProps = {
     style ? : React.CSSProperties;
-    onClick: () => void; //takes in-line function
+    onClick: () => Promise<void>; //takes in-line function
     variant?: string; // default, submit, continue, info, exit ...
     size?: string; // sm, md, lg ...
     text: string;
 };
+
+export type ButtonState = "default" | "loading" | "success" | "err";
 
 export const Button : FC<ButtonProps>  = ({
     style,
@@ -73,22 +76,79 @@ export const Button : FC<ButtonProps>  = ({
     text,
 }) =>{
 
+    const [buttonState, setButtonState] = useState<ButtonState>("default");
     const [isHovered, setHovered] = useState(false);
     //const [isLoading, setLoading] = useState(false);
 
-   // use your factory
-   const handleMouseEnter = mkHandleMouseEnter(setHovered);
-   const handleMouseLeave = mkHandleMouseLeave(setHovered);
+    // use your factory
+    const handleMouseEnter = mkHandleMouseEnter(setHovered);
+    const handleMouseLeave = mkHandleMouseLeave(setHovered);
 
-   /* toggleLoader = () => {
-       setLoading(!isLoading)
-   } */
+    const handleClickAsync = async ()=>{
 
-   //const handleClickAsync = mkOnClickAsynch(setClick);
+            // set buttonState to loading
 
-   /* function Normal(ButtonProps) {
-       return
-   } */
+            // dispatch the onclick
+            const [err] = await to(onClick());
+
+            // if there's an error dispatch update to button state
+            // that shows error
+            if(err){
+
+            } else if(!err){
+
+            }
+
+            const timeout = setTimeout(()=>{
+                // set the dispatch back to default
+                clearTimeout(timeout);
+            }, 1000);
+
+    }
+
+    useEffect(()=>{
+
+            let timeout : NodeJS.Timeout| undefined = undefined;
+
+            if(buttonState === "default"){
+
+                // do nothing
+
+            } else if (buttonState === "loading"){
+
+                // loading
+                onClick()
+                .then(()=>{
+                    // dispatch err state update
+                })
+                .catch(()=>{
+                    // dispatch success state update
+                })
+
+            } else if  (buttonState === "err"){
+
+                // 
+                timeout = setTimeout(()=>{
+
+                }, 1000);
+
+            } else if(buttonState === "success"){
+
+                timeout = setTimeout(()=>{
+
+                }, 1000);
+
+            } else {
+                // err
+            }
+
+            return ()=>{
+
+                if(timeout) clearTimeout(timeout);
+
+            };
+
+    }, [buttonState]);
 
 
    return (
@@ -96,13 +156,15 @@ export const Button : FC<ButtonProps>  = ({
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         className={BUTTON_CLASSNAMES}
-        onClick={handleClick(onClick)}
+        // onClick={handleClick(onClick)}
         style={{
             ...BUTTON_STYLE,
             ...style,
             ...!isHovered ? BUTTON_STYLE : {opacity: '0.8'}
             }}>
-            {text}
+            {useMemo(()=>{
+                return <>{text}</>
+            }, [])}
         </button>
     )
 };
